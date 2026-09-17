@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ML Drift Control Room</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="brand"><span>⌁</span> SIGNAL / LAB</a>
+      <div><span class="live"></span> LOCAL MODEL ONLINE</div>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <p class="eyebrow">02 / MACHINE LEARNING · MODEL OPERATIONS</p>
+          <h1>The world shifts.<br /><em>Does your model?</em></h1>
+          <p>
+            Operate a real equipment-risk classifier. Change its world,
+            investigate drift,<br class="desktop" />
+            and earn a model promotion with evidence.
+          </p>
+        </div>
+        <aside>
+          <span class="eyebrow">ACTIVE MODEL</span
+          ><strong id="version">baseline-v1</strong
+          ><span
+            >Logistic regression · 4 sensors<br />Baseline: 3,500 training
+            records · CPU inference</span
+          >
+        </aside>
+      </div>
+      <section class="controls">
+        <div>
+          <label for="scenario">SCENARIO</label
+          ><select id="scenario">
+            <option value="normal">01 · Stable conditions</option>
+            <option value="sensor_shift">02 · Sensor distribution shift</option>
+            <option value="concept_shift">03 · Hidden concept shift</option>
+            <option value="missing_sensor">
+              04 · Missing vibration sensor
+            </option>
+          </select>
+        </div>
+        <div class="slider">
+          <label for="severity"
+            >SHIFT SEVERITY <b id="severityText">100%</b></label
+          ><input
+            id="severity"
+            type="range"
+            min="0"
+            max="1"
+            step=".1"
+            value="1"
+          />
+        </div>
+        <div>
+          <label for="seed">SEED</label
+          ><input id="seed" type="number" value="42" min="0" max="1000000" />
+        </div>
+        <div>
+          <label for="threshold">RISK THRESHOLD</label
+          ><input
+            id="threshold"
+            type="number"
+            value="0.5"
+            step="0.05"
+            min="0.1"
+            max="0.9"
+          />
+        </div>
+        <label class="check"
+          ><input id="labels" type="checkbox" checked /> Labels available</label
+        ><button id="run">Run experiment ↗</button>
+      </section>
+      <p id="message" role="status" aria-live="polite">
+        Start with stable conditions, then try hidden concept shift.
+      </p>
+      <section class="metrics">
+        <article>
+          <span>F1 SCORE</span><strong id="f1">—</strong
+          ><small>Balance of precision and recall</small>
+        </article>
+        <article>
+          <span>AVERAGE PRECISION</span><strong id="ap">—</strong
+          ><small>Ranking quality across thresholds</small>
+        </article>
+        <article>
+          <span>BRIER LOSS</span><strong id="brier">—</strong
+          ><small>Probability error · lower is better</small>
+        </article>
+        <article>
+          <span>SENSOR ALERTS</span><strong id="alerts">—</strong
+          ><small>KS tests + missingness checks</small>
+        </article>
+      </section>
+      <section class="panel">
+        <div class="panelhead">
+          <div>
+            <p class="eyebrow">INPUT HEALTH</p>
+            <h2>Where the distributions move</h2>
+          </div>
+          <div class="legend">
+            <span>■ Reference</span><span>■ Current</span>
+          </div>
+        </div>
+        <div id="charts" class="charts">
+          <p class="empty">
+            Run an experiment to inspect live sensor distributions.
+          </p>
+        </div>
+        <div class="footnote">
+          Two-sample Kolmogorov–Smirnov test · Bonferroni α = 0.0125 per sensor
+          · missingness alert &gt; 5% · distributions alone cannot detect every
+          failure
+        </div>
+      </section>
+      <section class="twocol">
+        <article class="panel">
+          <div class="panelhead">
+            <div>
+              <p class="eyebrow">CONTROLLED MODEL RELEASE</p>
+              <h2>Champion vs. challenger</h2>
+            </div>
+            <span class="tag">60 / 20 / 20 SPLIT</span>
+          </div>
+          <div class="body">
+            <div class="split">
+              <span>900 <small>train + monitor</small></span
+              ><span>300 <small>promotion gate</small></span
+              ><span>300 <small>untouched audit</small></span>
+            </div>
+            <p class="muted">
+              Train a replacement on current labeled data. It must improve gate
+              F1 by 0.02 and increase Brier loss by no more than 0.02.
+            </p>
+            <div class="actions">
+              <button id="train" disabled>Train challenger</button
+              ><button id="promote" disabled>Promote locally</button
+              ><button id="rollback" class="secondary">
+                Reset to baseline
+              </button>
+            </div>
+            <div id="candidate" class="candidate muted">
+              A passing gate enables promotion. Audit results are revealed after
+              selection.
+            </div>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panelhead">
+            <div>
+              <p class="eyebrow">LEARNING NOTES</p>
+              <h2 id="lessonTitle">Drift is a clue, not a verdict.</h2>
+            </div>
+          </div>
+          <div class="body">
+            <p id="lesson">
+              A sensor can change without breaking a model. Or the relationship
+              between sensors and failures can change while the sensor
+              histograms look stable. Compare input alerts with measured
+              outcomes.
+            </p>
+            <div class="callout">
+              Turn off labels to see a real monitoring limitation: you can
+              inspect inputs and predictions, but you cannot measure F1 or
+              retrain from unlabeled outcomes.
+            </div>
+            <p class="muted">
+              Synthetic equipment data. The monitoring panel uses 900 records;
+              the gate and audit partitions remain separate. All models and
+              release state live in this server session.
+            </p>
+          </div>
+        </article>
+      </section>
+      <section class="twocol">
+        <article class="panel">
+          <div class="panelhead">
+            <h2>Prediction stream</h2>
+            <span class="tag">8 OBSERVATIONS</span>
+          </div>
+          <div class="body tablewrap" id="predictions">
+            Run an experiment to inspect predictions.
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panelhead">
+            <h2>Experiment trail</h2>
+            <a href="/api/report">Export report ↗</a>
+          </div>
+          <div class="body" id="trail">
+            Reproducible seeds, dataset fingerprints, and local release events.
+          </div>
+        </article>
+      </section>
+      <footer>
+        REAL TRAINING. MEASURABLE FAILURES. CONTROLLED PROMOTION.<span
+          >No API keys · Synthetic benchmark ·
+          <a href="/docs">API docs ↗</a></span
+        >
+      </footer>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
