@@ -4,6 +4,21 @@
 
 An ML engineering portfolio project by Nemanja Stancic. It uses synthetic equipment telemetry to demonstrate a failure that is easy to miss in dashboards: stable input distributions can hide a broken relationship between features and outcomes.
 
+**Python · FastAPI · scikit-learn · SciPy · NumPy · Vanilla JavaScript**
+
+[Run the demo](#run-locally) · [Five-minute walkthrough](#five-minute-recruiter-walkthrough) · [Architecture](#under-the-hood) · [Tradeoffs](#decisions-and-honest-limits)
+
+## Reviewer snapshot
+
+| Engineering question | What this project demonstrates |
+|---|---|
+| Can a model fail without input drift? | The concept-shift scenario changes the label relationship while keeping sensor distributions stable. |
+| How is retraining evaluated? | Separate training, promotion-gate and post-selection audit partitions. |
+| What controls a release? | Server-side F1/Brier gate, candidate identity checks, idempotent local promotion and rollback. |
+| What has been checked? | Seven tests pass, including hidden-label enforcement, drift scenarios and stale-candidate rejection. |
+
+**Reproduce the central result:** baseline model, concept shift at 100%, seed 42, threshold 0.5. The measured run produced **0/4 sensor alerts**, while gate F1 improved from **0.341 to 0.828** after retraining. These are results on one synthetic fixture, not a real-world performance guarantee.
+
 ## Run locally
 
 Install **Python 3.12**, then run from this directory:
@@ -114,3 +129,8 @@ These are examples of relevant engineering areas, not a claim that this mini-pro
 - [scikit-learn model evaluation](https://scikit-learn.org/stable/modules/model_evaluation.html)
 - [SciPy two-sample KS test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html)
 - [scikit-learn common pitfalls and data leakage](https://scikit-learn.org/stable/common_pitfalls.html)
+
+## Related portfolio projects
+
+- [PatchProof](https://github.com/cws1121/patchproof): coding-agent evaluation, patch verification and approval.
+- [Document AI Workbench](https://github.com/cws1121/document-ai-workbench): neural OCR, evidence-linked extraction and human review.
